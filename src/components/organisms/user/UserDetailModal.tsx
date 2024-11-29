@@ -1,5 +1,5 @@
 import { memo, FC } from 'react';
-import { Box, Image, Stack, Text, Input } from '@chakra-ui/react';
+import { Stack, Input } from '@chakra-ui/react';
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -13,17 +13,17 @@ import { Field } from "@/components/ui/field"
 import { User } from '@/types/api/user';
 
 type Props = {
-  isOpen : boolean;
-  onClose : () => void;
-  selectedUser : User | null;
+  user: User | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const UserDetailModal: FC<Props> = memo((props) => {
-  const { isOpen, onClose, selectedUser } = props;
+  const { user, isOpen, onClose } = props;
 
   return (
     <DialogRoot open={isOpen} onOpenChange={onClose} motionPreset='slide-in-bottom' trapFocus={false}>
-      {selectedUser && (
+      {user && (
         <DialogContent pb={4}>
           <DialogHeader>
             <DialogTitle>ユーザー詳細</DialogTitle>
@@ -31,16 +31,16 @@ export const UserDetailModal: FC<Props> = memo((props) => {
           <DialogBody mx={4}>
             <Stack gap='4'>
               <Field label='名前'>
-                <Input value='太郎' />
+                <Input value={user?.username} readOnly />
               </Field>
               <Field label='フルネーム'>
-                <Input value='Tarou Yamada' />
+                <Input value={user?.name} readOnly />
               </Field>
               <Field label='MAIL'>
-                <Input value='12345@example.com' />
+                <Input value={user?.email} readOnly />
               </Field>
               <Field label='TEL'>
-                <Input value='090-1111-2222' />
+                <Input value={user?.phone} readOnly />
               </Field>
             </Stack>
           </DialogBody>

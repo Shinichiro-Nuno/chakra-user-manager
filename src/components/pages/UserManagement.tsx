@@ -1,27 +1,21 @@
-import { memo, FC, useEffect, useState } from 'react';
-import { Center, Flex, Spinner } from '@chakra-ui/react';
+import { memo, useCallback, FC, useEffect } from 'react';
+import { Center, Flex, Spinner, useDisclosure } from '@chakra-ui/react';
 
 import { UserCard } from '../organisms/user/UserCard';
-import { useAllUsers } from '@/hooks/useAllUsers';
-import { User } from '@/types/api/user';
 import { UserDetailModal } from '../organisms/user/UserDetailModal';
+import { useAllUsers } from '@/hooks/useAllUsers';
+import { useSelectUser } from '@/hooks/useSelectUser';
 
 export const UserManagement: FC = memo(() => {
+  const { open, onOpen, onClose } = useDisclosure();
   const { getUsers, loading, users } = useAllUsers();
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isOpen, setIsDialogOpen] = useState(false);
+  const { onSelectUser, selectedUser } = useSelectUser();
 
   useEffect(() => getUsers(), []);
 
-  const handleDialogOpen = (user: User) => {
-    setSelectedUser(user);
-    setIsDialogOpen(true);
-  };
-
-  const onClose = () => {
-    setSelectedUser(null);
-    setIsDialogOpen(false);
-  };
+  const onClickUser = useCallback((id: number) => {
+    onSelectUser({ id, users, onOpen });
+  }, [users, onSelectUser, onOpen]);
 
   return (
     <>
@@ -40,24 +34,24 @@ export const UserManagement: FC = memo(() => {
           {users.map((user) => (
             <div
               key={user.id}
-              onClick={() => handleDialogOpen(user)}
               style={{ cursor: 'pointer' }}
             >
               <UserCard
+                id={user.id}
                 imageUrl='https://picsum.photos/260'
                 userName={user.username}
                 fullName={user.name}
+                onClick={onClickUser}
               />
             </div>
           ))}
           {/* ダイアログ */}
           <UserDetailModal
-            isOpen={isOpen}
+            isOpen={open}
             onClose={onClose}
-            selectedUser={selectedUser}
+            user={selectedUser}
           />
         </Flex>
-
       )}
     </>
   )
