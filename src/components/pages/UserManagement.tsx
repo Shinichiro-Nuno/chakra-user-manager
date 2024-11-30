@@ -12,7 +12,6 @@ export const UserManagement: FC = memo(() => {
   const { getUsers, loading, users } = useAllUsers();
   const { onSelectUser, selectedUser } = useSelectUser();
   const { loginUser } = useLoginUser();
-  console.log(loginUser);
 
   useEffect(() => getUsers(), []);
 
@@ -53,6 +52,7 @@ export const UserManagement: FC = memo(() => {
             isOpen={open}
             onClose={onClose}
             user={selectedUser}
+            isAdmin={loginUser?.isAdmin}
           />
         </Flex>
       )}
